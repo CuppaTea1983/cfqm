@@ -8,6 +8,7 @@
   },
   "homepage": "https://github.com/CuppaTea1983/cfqm",
   "repository": "https://github.com/CuppaTea1983/cfqm",
+  "privacyPolicyUrl": "https://github.com/CuppaTea1983/cfqm/blob/main/PRIVACY.md",
   "license": "MIT",
   "keywords": ["memory", "compaction", "session", "context", "persistence", "restore"]
 }

@@ -83,6 +83,10 @@ By hand, from the project folder: `sh "<plugin folder>/scripts/cfqm.sh" status |
 - In a project with no `CFQM.md` the hooks do nothing and leave no trace.
 - **On Windows**, the restore also gives Claude a short block of Windows notes ([`windows_notes.md`](plugins/cfqm/scripts/windows_notes.md)). They're the traps that otherwise come back every session: Git Bash halving `\\` in commands, the cp1252 console crashing on `→` or emoji, CRLF line endings, `/arguments` rewritten into Windows paths, and `python3` being the Microsoft Store stub. Your own CFQM always comes first. If the notes would crowd it out, the restore prints one line saying where they are instead.
 
+## Privacy
+
+CFQM makes no network connections, and everything it keeps stays in your project. The details of what it reads, writes and keeps are in the [privacy policy](PRIVACY.md).
+
 ## Uninstall
 
     /plugin uninstall cfqm@cuppatea1983
