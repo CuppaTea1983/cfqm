@@ -32,7 +32,7 @@ import sys
 import time
 from pathlib import Path
 
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 BODY_START = "## RESTORE CORE"
 BODY_END = "<!-- end restore body -->"
 INLINE_END = "<!-- end inline"
@@ -126,7 +126,8 @@ def _write(path, text, newline="\n"):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".cfqm-tmp")
-    with open(tmp, "w", encoding="utf-8", newline=newline) as fh:
+    # errors="replace": a stray lone surrogate (from anywhere) costs one character, never the whole write
+    with open(tmp, "w", encoding="utf-8", errors="replace", newline=newline) as fh:
         fh.write(text)
     os.replace(tmp, path)
 
@@ -135,7 +136,12 @@ def _hook_input():
     try:
         if sys.stdin is None or sys.stdin.isatty():
             return {}
-        raw = sys.stdin.read()
+        # The BYTES, decoded as UTF-8: Claude Code sends its JSON as raw UTF-8 (nothing escaped), while Python's own
+        # text stdin on Windows is the ANSI code page (cp1252 + surrogateescape on a pipe). That turned an em dash
+        # into mojibake and the 0x8F byte inside an emoji into a lone surrogate no file write accepts (1.1.2: a
+        # compaction's NOW was lost to "UnicodeEncodeError ... '\udc8f'").
+        buf = getattr(sys.stdin, "buffer", None)
+        raw = buf.read().decode("utf-8", errors="replace") if buf is not None else sys.stdin.read()
         d = json.loads(raw) if raw.strip() else {}
         return d if isinstance(d, dict) else {}
     except Exception:
