@@ -1,0 +1,10 @@
+{
+  "name": "cfqm",
+  "version": "1.0.0",
+  "description": "A session memory that survives compaction. CFQM.md is printed back into the session after every compact, resume and clear; the compaction itself rewrites its NOW; old detail rotates to an archive.",
+  "author": {
+    "name": "OmegaVR"
+  },
+  "license": "MIT",
+  "keywords": ["memory", "compaction", "session", "context", "persistence", "restore"]
+}

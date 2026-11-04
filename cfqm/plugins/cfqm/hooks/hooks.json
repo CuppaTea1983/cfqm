@@ -1,0 +1,53 @@
+{
+  "description": "CFQM: the session memory that survives compaction (restore after a compact / resume / clear / start, the compaction rewrites NOW, a rare nudge)",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/cfqm.sh\" restore",
+            "timeout": 20,
+            "statusMessage": "CFQM: restoring the session memory"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/cfqm.sh\" precompact",
+            "timeout": 20,
+            "statusMessage": "CFQM: snapshot, and asking the compaction for a fresh NOW"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/cfqm.sh\" postcompact",
+            "timeout": 20,
+            "statusMessage": "CFQM: filing the compaction's NOW"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/cfqm.sh\" nudge",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
