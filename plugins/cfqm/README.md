@@ -4,4 +4,4 @@ A session memory for Claude Code that survives compaction. `CFQM.md` in your pro
 
 The compaction keeps it current: the PreCompact hook asks the compaction to write NOW and LOG lines into its summary, and the PostCompact hook files them into `CFQM.md`. Old detail rotates to `CFQM_archive.md`.
 
-Start with `/cfqm init` in a project. Requirements: Python 3.8+ (standard library only) and `sh` (on Windows, Git for Windows). Settings, the file's sections and how the hooks work are in the repository's main README.
+Install it with `/plugin install cfqm --marketplace CuppaTea1983/cfqm` (Claude Code 2.1.275 or later), then start with `/cfqm init` in a project. Requirements: Python 3.8+ (standard library only) and `sh` (on Windows, Git for Windows). Settings, the file's sections and how the hooks work are in the repository's main README.

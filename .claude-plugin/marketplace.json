@@ -1,9 +1,10 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "omegavr",
-  "description": "OmegaVR's Claude Code plugins",
+  "name": "CuppaTea1983",
+  "description": "CuppaTea1983's Claude Code plugins",
   "owner": {
-    "name": "OmegaVR"
+    "name": "CuppaTea1983",
+    "url": "https://github.com/CuppaTea1983"
   },
   "plugins": [
     {
@@ -11,8 +12,9 @@
       "description": "A session memory that survives compaction. CFQM.md is printed back into the session after every compact, resume and clear; the compaction itself rewrites its NOW; old detail rotates to an archive.",
       "version": "1.0.0",
       "author": {
-        "name": "OmegaVR"
+        "name": "CuppaTea1983"
       },
+      "homepage": "https://github.com/CuppaTea1983/cfqm",
       "source": "./plugins/cfqm",
       "category": "productivity"
     }

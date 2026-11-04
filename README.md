@@ -34,6 +34,10 @@ Everything above the `<!-- end inline -->` marker is printed into the session; C
 
 From GitHub: CuppaTea1983/cfqm
 
+    /plugin install cfqm --marketplace CuppaTea1983/cfqm
+
+That's one step on Claude Code 2.1.275 or later. On older versions, use two:
+
     /plugin marketplace add CuppaTea1983/cfqm
     /plugin install cfqm@CuppaTea1983
 
