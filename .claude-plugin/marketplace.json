@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "CuppaTea1983",
+  "name": "cuppatea1983",
   "description": "CuppaTea1983's Claude Code plugins",
   "owner": {
     "name": "CuppaTea1983",
@@ -10,7 +10,7 @@
     {
       "name": "cfqm",
       "description": "A session memory that survives compaction. CFQM.md is printed back into the session after every compact, resume and clear; the compaction itself rewrites its NOW; old detail rotates to an archive.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "CuppaTea1983"
       },

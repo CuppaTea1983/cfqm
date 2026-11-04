@@ -39,12 +39,12 @@ From GitHub: CuppaTea1983/cfqm
 That's one step on Claude Code 2.1.275 or later. On older versions, use two:
 
     /plugin marketplace add CuppaTea1983/cfqm
-    /plugin install cfqm@CuppaTea1983
+    /plugin install cfqm@cuppatea1983
 
 From a local copy of this folder:
 
     /plugin marketplace add "/path/to/CFQM Plugin"
-    /plugin install cfqm@CuppaTea1983
+    /plugin install cfqm@cuppatea1983
 
 Then, in a project, run `/cfqm init` (or ask Claude to set up CFQM) and fill in RESTORE CORE and HARD CONSTRAINTS together. NOW fills itself at the first compaction.
 
@@ -85,7 +85,7 @@ By hand, from the project folder: `sh "<plugin folder>/scripts/cfqm.sh" status |
 
 ## Uninstall
 
-    /plugin uninstall cfqm@CuppaTea1983
+    /plugin uninstall cfqm@cuppatea1983
 
 Your `CFQM.md` and its archive stay where they are.
 
