@@ -1,0 +1,9 @@
+--- Windows notes (the cfqm plugin; this machine runs Windows) ---
+- The Bash tool is Git Bash. Its MSYS layer halves every `\\` in a command before bash parses it, and quotes and heredocs don't protect it. For code with Windows paths or backslash escapes, write it to a file and run the file, or use PowerShell. Use forward slashes in Bash paths.
+- MSYS also rewrites an argument that starts with `/` into a Windows path (`/compact` becomes `C:/Program Files/Git/compact`). Prefix that command with `MSYS_NO_PATHCONV=1`.
+- The console is cp1252, so printing → ✓ ✘ or emoji raises UnicodeEncodeError. Use `PYTHONIOENCODING=utf-8`, or `sys.stdout.reconfigure(encoding="utf-8", errors="replace")` (which still works under `python -I`, where the variable is ignored). Open text files with `encoding="utf-8"`.
+- Python's text mode writes CRLF here: pass `newline="\n"` for LF, or `newline=""` to keep the bytes exact. Git may check files out CRLF, so compare with line ends normalised. Git Bash's `grep -c $'\r'` can report 0 on a CRLF file: count in Python instead.
+- `python3` can be the Microsoft Store stub ("Python was not found"). Try `python` or `py -3`.
+- In PowerShell, set environment variables with `$env:NAME = "value"`. cmd's `set` never reaches the program.
+- After a pipe, `$?` is the last command's status (`cmd | tail` gives tail's).
+- Windows won't replace or delete an open file. Close handles first, SQLite connections included.

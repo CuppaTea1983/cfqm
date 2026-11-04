@@ -32,7 +32,7 @@ import sys
 import time
 from pathlib import Path
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 BODY_START = "## RESTORE CORE"
 BODY_END = "<!-- end restore body -->"
 INLINE_END = "<!-- end inline"
@@ -58,9 +58,12 @@ DEFAULTS = {
     "nudge_hours": 2.0,                  # ...and at least this long since
     "also_read": [],                     # files the restore names as depth, read on demand
     "keep_snapshots": 0,                 # 0 = keep every snapshot
+    "windows_notes": True,               # on Windows the restore adds windows_notes.md (Git Bash, the console, CRLF)
 }
 
 TEMPLATE = Path(__file__).resolve().parent.parent / "skills" / "cfqm" / "template.md"
+WINDOWS_NOTES = Path(__file__).resolve().parent / "windows_notes.md"
+IS_WINDOWS = sys.platform in ("win32", "cygwin", "msys")
 
 
 # ---------------------------------------------------------------------------------------------------------- small
@@ -512,13 +515,42 @@ def cmd_restore(ctx, argv):
     if sp[1] - sp[0] > int(ctx.cfg["body_budget"]):
         tail.append(f"(CFQM's body is {sp[1] - sp[0]:,} characters, over its {int(ctx.cfg['body_budget']):,} "
                     f"budget: trim THREADS, or `cfqm.py rotate` moves the oldest LOG lines out.)")
-    budget = min(int(ctx.cfg["inline_budget"]), MAX_HOOK_TEXT - len("\n".join(head + tail)) - 300)
-    shown, dropped = _cut(inline, max(500, budget))
-    if dropped:
-        shown += (f"\n\n[... {dropped:,} more characters of CFQM's inline part are not shown: it is over its "
-                  f"{int(ctx.cfg['inline_budget']):,}-character budget. Read the file for them, then trim it "
-                  f"(the cfqm skill).]")
+    ib = int(ctx.cfg["inline_budget"])
+    tail = place_notes(head, tail, inline, ib, windows_notes(ctx))
+    limit = min(ib, _room(head, tail))
+    if len(inline) <= limit:
+        shown = inline
+    else:
+        shown, dropped = _cut(inline, max(500, limit - 300))
+        shown += (f"\n\n[... {len(inline) - len(shown):,} more characters of CFQM's inline part are not shown: "
+                  f"it is over the {limit:,} characters this restore has room for. Read the file for them, then "
+                  f"trim it (the cfqm skill).]")
     return "\n".join(head) + "\n\n" + shown + "\n" + "\n".join(tail)
+
+
+def _room(head, tail):
+    """Characters left for CFQM's inline part once the restore's own lines are counted."""
+    return MAX_HOOK_TEXT - len("\n".join(head)) - len("\n".join(tail)) - 10
+
+
+def windows_notes(ctx):
+    """The plugin's Windows notes (Git Bash's halved backslashes, the cp1252 console, CRLF...), on Windows only."""
+    if not IS_WINDOWS or not ctx.cfg.get("windows_notes", True):
+        return ""
+    t, _ = _read(WINDOWS_NOTES)
+    return _cut((t or "").strip(), 1800)[0]
+
+
+def place_notes(head, tail, inline, inline_budget, notes):
+    """The user's own memory comes first: the notes go in whole only while the inline part still fits whole beside
+    them; otherwise one line says where they are."""
+    if not notes:
+        return tail
+    full = tail + ["", notes]
+    if len(inline) <= min(inline_budget, _room(head, full)):
+        return full
+    return tail + ["", f"Windows notes (Git Bash's halved backslashes, the cp1252 console, CRLF): Read {WINDOWS_NOTES}"
+                       " before running shell commands."]
 
 
 def _snapshot(ctx):

@@ -66,6 +66,7 @@ All optional, in `<project>/.claude/cfqm.json`:
 | `nudge_hours` | `2.0` | ...and at least this long since |
 | `also_read` | `[]` | files the restore names as further reading |
 | `keep_snapshots` | `0` | `0` keeps every snapshot |
+| `windows_notes` | `true` | on Windows, the restore adds the plugin's short Windows notes (`false` = off) |
 
 By hand, from the project folder: `sh "<plugin folder>/scripts/cfqm.sh" status | init | stamp [--check] | rotate` (or add `--project DIR`).
 
@@ -80,6 +81,7 @@ By hand, from the project folder: `sh "<plugin folder>/scripts/cfqm.sh" status |
 - If a compaction leaves the block out, NOW stays as it was and the next restore says it wasn't rewritten. That also happens with some compaction paths that hand PostCompact an empty summary.
 - If the same hooks are also in a project's own settings, that's safe: a duplicate run within 90 seconds does nothing.
 - In a project with no `CFQM.md` the hooks do nothing and leave no trace.
+- **On Windows**, the restore also gives Claude a short block of Windows notes ([`windows_notes.md`](plugins/cfqm/scripts/windows_notes.md)). They're the traps that otherwise come back every session: Git Bash halving `\\` in commands, the cp1252 console crashing on `→` or emoji, CRLF line endings, `/arguments` rewritten into Windows paths, and `python3` being the Microsoft Store stub. Your own CFQM always comes first. If the notes would crowd it out, the restore prints one line saying where they are instead.
 
 ## Uninstall
 
