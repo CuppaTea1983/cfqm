@@ -7,4 +7,5 @@
 - `python3` can be the Microsoft Store stub ("Python was not found"). Try `python` or `py -3`.
 - In PowerShell, set environment variables with `$env:NAME = "value"`. cmd's `set` never reaches the program.
 - After a pipe, `$?` is the last command's status (`cmd | tail` gives tail's).
-- Windows won't replace or delete an open file. Close handles first, SQLite connections included.
+- Windows won't replace or delete an open file. Close handles first, SQLite connections included. Across processes too: Python opens files without delete sharing, so another program's delete of a file Python is only reading fails. Retry such a write.
+- `robocopy /MIR` (or `/PURGE`) deletes THROUGH a junction inside the destination: the files of the folder it points at go too, even with `/XJ` or `/XJD`. It also skips a junction in the source. Check a tree for reparse points before mirroring into it; to delete a tree, Python 3.8+'s `shutil.rmtree` removes a junction as a link and leaves its target alone.

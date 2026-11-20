@@ -32,7 +32,7 @@ import sys
 import time
 from pathlib import Path
 
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 BODY_START = "## RESTORE CORE"
 BODY_END = "<!-- end restore body -->"
 INLINE_END = "<!-- end inline"
@@ -718,11 +718,24 @@ def cmd_postcompact(ctx, argv):
 
 
 def cmd_nudge(ctx, argv):
-    n = int(ctx.cfg["nudge_edits"] or 0)
-    if n <= 0:
-        return ""
     text, nl = _read(ctx.file)
     if text is None or not body_span(text):
+        return ""
+    # (1.1.3) the inline part past its budget: a restore would print it cut short, so say so NOW, once per version of
+    # it (a NOW grown by hand through a day's work went 8,000 -> 11,100 characters with no warning until a restore)
+    ib = int(ctx.cfg["inline_budget"])
+    inline, _rest = inline_part(text)
+    if len(inline) > ib:
+        warned = ctx.state.setdefault("over_warned", {})
+        key = f"{ctx.hook.get('session_id')}|{_hash(inline)}"
+        if key not in warned:
+            warned.clear()
+            warned[key] = 1
+            return (f"[cfqm] CFQM's inline part is {len(inline):,} / {ib:,} characters: over its budget, so a restore "
+                    f"would print it cut short. Rewrite NOW in {ctx.file} tighter now (details belong in memory or "
+                    f"THREADS) and archive the old NOW whole (never cut).")
+    n = int(ctx.cfg["nudge_edits"] or 0)
+    if n <= 0:
         return ""
     track(ctx, text)
     since = ctx.state.get("now_at") or 0
